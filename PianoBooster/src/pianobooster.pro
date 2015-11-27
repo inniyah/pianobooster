@@ -74,6 +74,8 @@ SOURCES   = QtMain.cpp  \
 
 RC_FILE     = pianobooster.rc
 
+TRANSLATIONS = pianobooster_es.ts
+
 INCLUDEPATH += rtmidi
 
 OBJECTS_DIR = tmp
