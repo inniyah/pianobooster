@@ -24,7 +24,7 @@
 
 */
 
-#include <QtGui>
+#include <QPushButton>
 
 #include "GuiLoopingPopup.h"
 #include "GlView.h"
