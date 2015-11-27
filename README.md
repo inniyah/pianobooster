@@ -27,6 +27,11 @@ Piano Booster is piano teaching software that can provide piano lessons for begi
  * Timing markers are white crosses that are drawn over each note and show if you are playing ahead or behind the beat.
  * A different instrument sound is used for the right and wrong notes that you play.
 
+## About This Version
+
+ * Upgraded RtMidi to Version 1.0.15. You can read more about RtMidi at <http://music.mcgill.ca/~gary/rtmidi/>
+ * Ported the code to Qt5. You can read more about Qt at <http://www.qt.io/> and <https://www.qt.io/developers/>
+
 ## Author
 
 The program has been originally developed by Louis J. Barman, and its main homepage is <http://pianobooster.sourceforge.net/>.
