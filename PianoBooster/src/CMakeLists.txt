@@ -111,8 +111,7 @@ ENDIF(USE_FLUIDSYNTH)
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR} ${OPENGL_INCLUDE_DIR} )
 
 # tell CMake what libraries our executable needs,
-# luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-LINK_LIBRARIES( ${QT_LIBRARIES} )
+LINK_LIBRARIES( Qt5::Widgets Qt5::Core Qt5::OpenGL Qt5::Xml )
 
 
 
