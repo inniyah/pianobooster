@@ -8,7 +8,7 @@
     RtMidi WWW site: http://music.mcgill.ca/~gary/rtmidi/
 
     RtMidi: realtime MIDI i/o C++ classes
-    Copyright (c) 2003-2011 Gary P. Scavone
+    Copyright (c) 2003-2010 Gary P. Scavone
 
     Permission is hereby granted, free of charge, to any person
     obtaining a copy of this software and associated documentation files
@@ -35,7 +35,7 @@
 */
 /**********************************************************************/
 
-// RtMidi: Version 1.0.15
+// RtMidi: Version 1.0.11
 
 #ifndef RTMIDI_H
 #define RTMIDI_H
@@ -96,6 +96,7 @@ class RtMidi
 /**********************************************************************/
 
 #include <vector>
+#include <queue>
 
 class RtMidiIn : public RtMidi
 {
@@ -104,15 +105,11 @@ class RtMidiIn : public RtMidi
   //! User callback function type definition.
   typedef void (*RtMidiCallback)( double timeStamp, std::vector<unsigned char> *message, void *userData);
 
-  //! Default constructor that allows an optional client name and queue size.
+  //! Default constructor that allows an optional client name.
   /*!
-      An exception will be thrown if a MIDI system initialization
-      error occurs.  The queue size defines the maximum number of
-      messages that can be held in the MIDI queue (when not using a
-      callback function).  If the queue size limit is reached,
-      incoming messages will be ignored.
+      An exception will be thrown if a MIDI system initialization error occurs.
   */
-  RtMidiIn( const std::string clientName = std::string( "RtMidi Input Client"), unsigned int queueSizeLimit = 100 );
+  RtMidiIn( const std::string clientName = std::string( "RtMidi Input Client") );
 
   //! If a MIDI connection is still open, it will be closed by the destructor.
   ~RtMidiIn();
@@ -157,13 +154,20 @@ class RtMidiIn : public RtMidi
 
   //! Return a string identifier for the specified MIDI input port number.
   /*!
-      An empty string is returned if an invalid port specifier is provided.
+      An exception is thrown if an invalid port specifier is provided.
   */
   std::string getPortName( unsigned int portNumber = 0 );
 
+  //! Set the maximum number of MIDI messages to be saved in the queue.
+  /*!
+      If the queue size limit is reached, incoming messages will be
+      ignored.  The default limit is 1024.
+  */
+  void setQueueSizeLimit( unsigned int queueSize );
+
   //! Specify whether certain MIDI message types should be queued or ignored during input.
   /*!
-o      By default, MIDI timing and active sensing messages are ignored
+      By default, MIDI timing and active sensing messages are ignored
       during message input because of their relative high data rates.
       MIDI sysex messages are ignored by default as well.  Variable
       values of "true" imply that the respective message type will be
@@ -189,26 +193,15 @@ o      By default, MIDI timing and active sensing messages are ignored
 
     // Default constructor.
     MidiMessage()
-      :bytes(0), timeStamp(0.0) {}
-  };
-
-  struct MidiQueue {
-    unsigned int front;
-    unsigned int back;
-    unsigned int size;
-    unsigned int ringSize;
-		MidiMessage *ring;
-
-    // Default constructor.
-    MidiQueue()
-      :front(0), back(0), size(0), ringSize(0) {}
+      :bytes(3), timeStamp(0.0) {}
   };
 
   // The RtMidiInData structure is used to pass private class data to
   // the MIDI input handling function or thread.
   struct RtMidiInData {
-    MidiQueue queue;
+    std::queue<MidiMessage> queue;
     MidiMessage message;
+    unsigned int queueLimit;
     unsigned char ignoreFlags;
     bool doInput;
     bool firstMessage;
@@ -220,7 +213,7 @@ o      By default, MIDI timing and active sensing messages are ignored
 
     // Default constructor.
     RtMidiInData()
-      : ignoreFlags(7), doInput(false), firstMessage(true),
+      : queueLimit(1024), ignoreFlags(7), doInput(false), firstMessage(true),
         apiData(0), usingCallback(false), userCallback(0), userData(0),
         continueSysex(false) {}
   };
@@ -287,7 +280,7 @@ class RtMidiOut : public RtMidi
 
   //! Return a string identifier for the specified MIDI port type and number.
   /*!
-      An empty string is returned if an invalid port specifier is provided.
+      An exception is thrown if an invalid port specifier is provided.
   */
   std::string getPortName( unsigned int portNumber = 0 );
 

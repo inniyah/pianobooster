@@ -20,7 +20,6 @@
 ****************************************************************************/
 
 #include <QApplication>
-#include <QTranslator>
 
 #include <QtOpenGL>
 #include "QtWindow.h"

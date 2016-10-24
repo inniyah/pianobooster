@@ -1,9 +1,6 @@
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-
 SET( TRANSLATIONS_FILES
-     ${CMAKE_CURRENT_SOURCE_DIR}/pianobooster_ja.ts
-     ${CMAKE_CURRENT_SOURCE_DIR}/pianobooster_es.ts
+     pianobooster_ja.ts
+     pianobooster_es.ts
 )
 
 QT4_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS_FILES})
