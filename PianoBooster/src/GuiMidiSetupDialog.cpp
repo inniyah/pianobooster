@@ -73,7 +73,7 @@ void GuiMidiSetupDialog::init(CSong* song, CSettings* settings)
 
     sampleRateCombo->addItem("44100");
     sampleRateCombo->addItem("22050");
-    i = sampleRateCombo->findText(m_settings->value("Fliudsynth/SampleRate").toString());
+    i = sampleRateCombo->findText(m_settings->value("Fluidsynth/SampleRate").toString());
     if (i!=-1)
         sampleRateCombo->setCurrentIndex(i);
 
@@ -100,7 +100,7 @@ void GuiMidiSetupDialog::updateMidiInfoText()
         midiInfoText->append("<span style=\"color:#FF6600\">" + tr("The use of Midi Through is not recommended!") + "</span>");
     else if (midiOutputCombo->currentText().contains("Microsoft GS Wavetable", Qt::CaseInsensitive))
         midiInfoText->append("<span style=\"color:#FF6600\">" + tr("Note: the Microsoft GS Wavetable Synth introduces an unwanted delay!.\n")
-                              + tr("(Try a latancy fix of 150msc)") + "</span>");
+                              + tr("(Try a latency fix of 150msc)") + "</span>");
     else
         midiInfoText->append("<span style=\"color:gray\">" + tr("Midi Output Device: ") + midiOutputCombo->currentText() +"</span>");
 
