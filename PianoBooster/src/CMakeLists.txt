@@ -1,18 +1,18 @@
 # Cmake File for Piano Booster
 # for the debug build type cmake -DCMAKE_BUILD_TYPE=Debug
 SET(CMAKE_BUILD_TYPE Release)
-SET(CMAKE_VERBOSE_MAKEFILE OFF)
 SET(USE_FLUIDSYNTH OFF)
 
 # The inplace directory is mainly for windows builds
 # SET(FLUIDSYNTH_INPLACE_DIR C:/download/misc/ljb/fluidsynth-1.0.9)
 SET(FLUIDSYNTH_INPLACE_DIR /home/louis/build/fluidsynth-1.0.9)
 
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Testing precompiled headers  it does not work -- leave as OFF.
 SET(USE_PCH OFF)
-
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 2.8.3)
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
@@ -28,21 +28,31 @@ PROJECT( pianobooster )
 # enable warnings
 ADD_DEFINITIONS(-Wall)
 
-# by default only QtCore and QtGui modules are enabled
-# other modules must be enabled like this:
-SET(QT_USE_QTOPENGL TRUE)
-SET(QT_USE_QTXML TRUE)
-
-
 FIND_PACKAGE( OpenGL REQUIRED )
 
-# this command finds Qt4 libraries and sets all required variables
-# note that it's Qt4, not QT4 or qt4
-FIND_PACKAGE( Qt4 REQUIRED )
+# Widgets finds its own dependencies (QtGui and QtCore).
+FIND_PACKAGE( Qt5Widgets REQUIRED )
 
-# add some useful macros and variables
-# (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
-INCLUDE( ${QT_USE_FILE} )
+# The Qt5Widgets_INCLUDES also includes the include directories for
+# dependencies QtCore and QtGui
+INCLUDE_DIRECTORIES( ${Qt5Widgets_INCLUDE_DIRS} )
+
+# We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
+ADD_DEFINITIONS( ${Qt5Widgets_DEFINITIONS} )
+
+# Add compiler flags for building executables (-fPIE)
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+
+FIND_PACKAGE( Qt5OpenGL REQUIRED )
+INCLUDE_DIRECTORIES( ${Qt5OpenGL_INCLUDE_DIRS} )
+ADD_DEFINITIONS( ${Qt5OpenGL_DEFINITIONS} )
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5OpenGL_EXECUTABLE_COMPILE_FLAGS}")
+
+FIND_PACKAGE( Qt5Xml REQUIRED )
+INCLUDE_DIRECTORIES( ${Qt5Xml_INCLUDE_DIRS} )
+ADD_DEFINITIONS( ${Qt5Xml_DEFINITIONS} )
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Xml_EXECUTABLE_COMPILE_FLAGS}")
+
 
 IF (USE_PCH)
 INCLUDE(precompile/PCHSupport_26.cmake)
@@ -177,13 +187,13 @@ SET( PIANOBOOSTER_RCS
 
 # this command will generate rules that will run rcc on all files from PIANOBOOSTER_RCS
 # in result PIANOBOOSTER_RC_SRCS variable will contain paths to files produced by rcc
-QT4_ADD_RESOURCES( PIANOBOOSTER_RC_SRCS ${PIANOBOOSTER_RCS} )
+QT5_ADD_RESOURCES( PIANOBOOSTER_RC_SRCS ${PIANOBOOSTER_RCS} )
 
 # this will run uic on .ui files:
-QT4_WRAP_UI( PIANOBOOSTER_UI_HDRS ${PIANOBOOSTER_UIS} )
+QT5_WRAP_UI( PIANOBOOSTER_UI_HDRS ${PIANOBOOSTER_UIS} )
 
 # and finally this will run moc:
-QT4_WRAP_CPP( PIANOBOOSTER_MOC_SRCS ${PIANOBOOSTER_MOC_HDRS} )
+QT5_WRAP_CPP( PIANOBOOSTER_MOC_SRCS ${PIANOBOOSTER_MOC_HDRS} )
 
 
 # here we instruct CMake to build "pianobooster" executable from all of the source files

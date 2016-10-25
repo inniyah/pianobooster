@@ -1,10 +1,12 @@
+FIND_PACKAGE(Qt5LinguistTools)
+
 SET( TRANSLATIONS_FILES
-     pianobooster_ja.ts
-     pianobooster_es.ts
-     pianobooster_gl.ts
+      ${CMAKE_CURRENT_SOURCE_DIR}/pianobooster_ja.ts
+      ${CMAKE_CURRENT_SOURCE_DIR}/pianobooster_es.ts
+      ${CMAKE_CURRENT_SOURCE_DIR}/pianobooster_gl.ts
 )
 
-QT4_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS_FILES})
+QT5_ADD_TRANSLATION(QM_FILES ${TRANSLATIONS_FILES})
 ADD_CUSTOM_TARGET(translations ALL DEPENDS ${QM_FILES})
 
 IF (UNIX AND NOT APPLE)

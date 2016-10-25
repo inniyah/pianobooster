@@ -106,6 +106,8 @@ USE_FLUIDSYNTH {
     }
 }
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 QT += xml opengl
 
 # enable the console window
